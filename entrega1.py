@@ -96,14 +96,18 @@ class Sokoban(SearchProblem):
         if movimientos < MOVIMIENTOS_MAX:
             fila_personaje, col_personaje = posicion
             cajas_ady = cajas_adyacentes(posicion, cajas)
+            #obtenemos las posiciones adyacentes a donde esta el personaje
             for df, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
                 fila = fila_personaje + df
                 columna = col_personaje + dc
                 if (fila, columna) not in PAREDES:
                     if (fila, columna) in cajas_ady:
+                        #nos fijamos una posicion mas alla de la caja en busca de una caja o una pared
                         if (fila + df, columna + dc) not in PAREDES and (fila + df, columna + dc) not in cajas:
+                            #movemos personaje y caja
                             acciones_posibles.append(('mover', (fila, columna), (fila + df, columna + dc)))
                     else:
+                        #movemos solo el personaje porque estaba vacio
                         acciones_posibles.append(('mover', (fila, columna)))
 
         return acciones_posibles
@@ -111,20 +115,24 @@ class Sokoban(SearchProblem):
     def result(self, state, action):
         #print(state,action)
         posicion, cajas, movimientos = state
-        movimientos += 1
         if action[0] == 'mover':
+            movimientos += 1
+            #si la accion traia la accion y dos posiciones tenemos que mover personaje y caja
             if len(action) == 3:
                 cajas = tuple((caja if caja != action[1] else action[2]) for caja in cajas)
+            #sino solo movemos personaje
             posicion = action[1]
         return (posicion, cajas, movimientos)
 
     def heuristic(self, state):
-        posicion, cajas, movimientos = state
-        return len(set(cajas) - set(OBJETIVOS))
+        _, cajas, _ = state
+        #print((set(cajas) - set(OBJETIVOS)))
+        return len(set(OBJETIVOS) - set(cajas))
 
 
 problema = Sokoban(INICIAL)
+viewer = BaseViewer
 solucion = astar(problema)
 
 for accion, estado in solucion.path():
-    print("Action:", accion, "Cajas:", estado[1])
+    print("Action:", action, "Cajas:", estado[1])
