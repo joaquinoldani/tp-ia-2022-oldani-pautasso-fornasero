@@ -24,6 +24,7 @@ PAREDES = (
     (0,3),
     (0,4),
     (0,5),
+    (0,6),
     (1,0),
     (1,1),
     (1,2),
@@ -56,7 +57,7 @@ PAREDES = (
     (8,7),
 )
 
-MOVIMIENTOS_MAX = 15
+MOVIMIENTOS_MAX = 20
 
 OBJETIVOS = (
     (2,1),(3,5),(4,1),(5,4),(6,3),(6,6),(7,4) 
@@ -108,7 +109,7 @@ class Sokoban(SearchProblem):
         return acciones_posibles
 
     def result(self, state, action):
-        print(state,action)
+        #print(state,action)
         posicion, cajas, movimientos = state
         movimientos += 1
         if action[0] == 'mover':
