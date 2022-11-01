@@ -57,21 +57,45 @@ PAREDES = (
     (8,7),
 )
 
-MOVIMIENTOS_MAX = 20
+# PAREDES = (
+#     (0,0),
+#     (0,1),
+#     (0,2),
+#     (0,3),
+#     (0,4),
+#     (0,5),
+#     (1,0),
+#     (1,5),
+#     (2,0),
+#     (2,1),
+#     (2,2),
+#     (2,3),
+#     (2,4),
+#     (2,5)
+# )
+
+MOVIMIENTOS_MAX = 30
 
 OBJETIVOS = (
-    (2,1),(3,5),(4,1),(5,4),(6,3),(6,6),(7,4) 
+    (5,4), (4,1)
 )
+
+# OBJETIVOS = (
+#     (1,4), (1,1)
+# )
 
 #Estado inicial
 INICIAL = (
-    (1,3), #Posicion del personaje
-    (   
-    #(2,3),(3,4),(4,4),(6,1),(6,3),(6,4),(6,5)
-    (2,1),(3,5),(4,1),(5,4),(6,3),(7,3),(6,6)
-    ), #Cajas
+    (2,2), #Posicion del personaje
+    ((2,3),(6,1)), #Cajas
     0, #Movimientos
 )
+
+# INICIAL = (
+#     (1,2), #Posicion del personaje
+#     ((1,3), (1,1)), #Cajas
+#     0, #Movimientos
+# )
 
 def cajas_adyacentes(posicion, cajas):
     fila_personaje, col_personaje = posicion
@@ -90,58 +114,58 @@ class Sokoban(SearchProblem):
 
     def is_goal(self, state):
         _, cajas, movimientos = state
-        #print(sorted(cajas))
-        #print(sorted(OBJETIVOS))
-        #print('---')
-        return sorted(cajas) == sorted(OBJETIVOS)
+        return set(cajas) == set(OBJETIVOS) 
 
     def actions(self, state):
         #creo q hace falta ver si no me paso de los movimientos maximos
         posicion, cajas, movimientos = state
         acciones_posibles = [] 
-    
-        fila_personaje, col_personaje = posicion
-        print('estoy aca guachin', fila_personaje, col_personaje)
-        cajas_ady = cajas_adyacentes(posicion, cajas)
-        #obtenemos las posiciones adyacentes a donde esta el personaje
         if movimientos < MOVIMIENTOS_MAX:
-            #print('Movimientos: ', movimientos)
+            fila_personaje, col_personaje = posicion
+            cajas_ady = cajas_adyacentes(posicion, cajas)
+            # print('Estoy en :', fila_personaje, col_personaje)
+            # print('Cajas', cajas)
+            # print('Cajas adyacentes: ', cajas_ady)
             for df, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
                 fila = fila_personaje + df
                 columna = col_personaje + dc
+                #('Me puedo mover a esto?', fila, columna)
                 if (fila, columna) not in PAREDES:
-                    if (fila, columna) in cajas_ady:
-                        #nos fijamos una posicion mas alla de la caja en busca de una caja o una pared
+                    if (fila, columna) in cajas:
+                        #('Hay una caja adyacente en', fila, columna)
                         if (fila + df, columna + dc) not in PAREDES and (fila + df, columna + dc) not in cajas:
-                            #movemos personaje y caja
-                            print('Accion realizada: ',('mover', (fila, columna), (fila + df, columna + dc)))
+                            #('Puedo empujar la caja a', fila + df, columna + dc)
                             acciones_posibles.append(('mover', (fila, columna), (fila + df, columna + dc)))
                     else:
-                        #movemos solo el personaje porque estaba vacio
+                        #('En esta posicion no hay nada', fila, columna)
                         acciones_posibles.append(('mover', (fila, columna)))
+            
+            
+
+        #(acciones_posibles)
+        #('----')
         return acciones_posibles
 
     def result(self, state, action):
-        #print(state,action)
+        ##(action)
         posicion, cajas, movimientos = state
+        cajas_modificable = list(cajas)
+        movimientos += 1
         if action[0] == 'mover':
-            movimientos += 1
-            #si la accion traia la accion y dos posiciones tenemos que mover personaje y caja
             if len(action) == 3:
-                cajas = tuple((caja if caja != action[1] else action[2]) for caja in cajas)
-            #sino solo movemos personaje
+                cajas_modificable = ((caja if caja != action[1] else action[2]) for caja in cajas_modificable)
             posicion = action[1]
-        return (posicion, cajas, movimientos)
+        return (posicion, tuple(tuple(caja) for caja in cajas_modificable), movimientos)
 
     def heuristic(self, state):
-        _, cajas, _ = state
-        #print('Heuristica: ', len(set(OBJETIVOS) - set(cajas)))
+        _, cajas ,_  = state
         return len(set(OBJETIVOS) - set(cajas))
 
 
 problema = Sokoban(INICIAL)
-viewer = WebViewer()
+
 solucion = astar(problema)
 
-for action, estado in solucion.path():
-    print("Action: ", action, "Cajas:", estado[1])
+
+for accion, estado in solucion.path():
+    print("Action:", accion, "Cajas:", estado[1])
