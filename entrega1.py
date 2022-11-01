@@ -65,8 +65,11 @@ OBJETIVOS = (
 
 #Estado inicial
 INICIAL = (
-    (2,2), #Posicion del personaje
-    ((2,3),(3,4),(4,4),(6,1),(6,3),(6,4),(6,5)), #Cajas
+    (1,3), #Posicion del personaje
+    (   
+    #(2,3),(3,4),(4,4),(6,1),(6,3),(6,4),(6,5)
+    (2,1),(3,5),(4,1),(5,4),(6,3),(7,3),(6,6)
+    ), #Cajas
     0, #Movimientos
 )
 
@@ -87,16 +90,22 @@ class Sokoban(SearchProblem):
 
     def is_goal(self, state):
         _, cajas, movimientos = state
-        return sorted(cajas) == sorted(OBJETIVOS) 
+        #print(sorted(cajas))
+        #print(sorted(OBJETIVOS))
+        #print('---')
+        return sorted(cajas) == sorted(OBJETIVOS)
 
     def actions(self, state):
         #creo q hace falta ver si no me paso de los movimientos maximos
         posicion, cajas, movimientos = state
         acciones_posibles = [] 
+    
+        fila_personaje, col_personaje = posicion
+        print('estoy aca guachin', fila_personaje, col_personaje)
+        cajas_ady = cajas_adyacentes(posicion, cajas)
+        #obtenemos las posiciones adyacentes a donde esta el personaje
         if movimientos < MOVIMIENTOS_MAX:
-            fila_personaje, col_personaje = posicion
-            cajas_ady = cajas_adyacentes(posicion, cajas)
-            #obtenemos las posiciones adyacentes a donde esta el personaje
+            #print('Movimientos: ', movimientos)
             for df, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
                 fila = fila_personaje + df
                 columna = col_personaje + dc
@@ -105,11 +114,11 @@ class Sokoban(SearchProblem):
                         #nos fijamos una posicion mas alla de la caja en busca de una caja o una pared
                         if (fila + df, columna + dc) not in PAREDES and (fila + df, columna + dc) not in cajas:
                             #movemos personaje y caja
+                            print('Accion realizada: ',('mover', (fila, columna), (fila + df, columna + dc)))
                             acciones_posibles.append(('mover', (fila, columna), (fila + df, columna + dc)))
                     else:
                         #movemos solo el personaje porque estaba vacio
                         acciones_posibles.append(('mover', (fila, columna)))
-
         return acciones_posibles
 
     def result(self, state, action):
@@ -126,13 +135,13 @@ class Sokoban(SearchProblem):
 
     def heuristic(self, state):
         _, cajas, _ = state
-        #print((set(cajas) - set(OBJETIVOS)))
+        #print('Heuristica: ', len(set(OBJETIVOS) - set(cajas)))
         return len(set(OBJETIVOS) - set(cajas))
 
 
 problema = Sokoban(INICIAL)
-viewer = BaseViewer
+viewer = WebViewer()
 solucion = astar(problema)
 
-for accion, estado in solucion.path():
-    print("Action:", action, "Cajas:", estado[1])
+for action, estado in solucion.path():
+    print("Action: ", action, "Cajas:", estado[1])
