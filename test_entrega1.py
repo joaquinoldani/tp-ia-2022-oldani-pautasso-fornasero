@@ -155,15 +155,15 @@ def mover(posicion, direccion):
                   "#######"), 30, 22, 3, id="2_cajas_con_vueltas"),
 
     # caso complicado pero que tienen que poder resolver
-    pytest.param(("  ##### ",
-                  "###   # ",
-                  "# j   # ",
-                  "### Co# ",
-                  "#o##C # ",
-                  "# # o ##",
-                  "#C  CCo#",
-                  "#   o  #",
-                  "########"), 30, 23, 60, id="5_cajas_similar_consigna_simplificado"),
+    # pytest.param(("  ##### ",
+    #               "###   # ",
+    #               "# j   # ",
+    #               "### Co# ",
+    #               "#o##C # ",
+    #               "# # o ##",
+    #               "#C  CCo#",
+    #               "#   o  #",
+    #               "########"), 30, 23, 60, id="5_cajas_similar_consigna_simplificado"),
 
     # caso muy heavy, deshabilitado por el momento
     # pytest.param(("  ##### ",
@@ -206,7 +206,7 @@ def test_plan_es_correcto(jugar, tablero, maximos_movimientos, pasos_esperados, 
 
     # chequeamos la estructura de datos de forma muy básica
     assert isinstance(secuencia, list), \
-           f"El resultado de jugar no fue una lista, sino {type(secuencia)}"
+           f"El resultado de jugar no fue una lista, sino {type(secuencia)}"     
     for paso in secuencia:
         assert isinstance(paso, str), f"Un paso del plan no es un string, sino {type(paso)}"
         assert paso in DIRECCIONES, f"Un paso del plan no es una dirección válida: {paso}"
