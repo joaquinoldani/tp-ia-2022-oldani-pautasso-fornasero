@@ -87,7 +87,7 @@ OBJETIVOS = (
 #Estado inicial
 INICIAL = (
     (2,2), #Posicion del personaje
-    ((2,3),(6,1)), #Cajas
+    ((2,3),(5,1)), #Cajas
     0, #Movimientos
 )
 
@@ -106,6 +106,18 @@ def cajas_adyacentes(posicion, cajas):
         if (fila, columna) in cajas:
             adyacentes.append((fila, columna))
     return adyacentes
+
+
+def direccion(coordenada):
+    fila, columna = coordenada
+    if fila == 1:
+        return 'derecha'
+    elif fila == -1:
+        return 'izquierda'
+    elif columna == 1:
+        return 'arriba'
+    elif columna == -1:
+        return 'abajo'
 
 class Sokoban(SearchProblem):
     
@@ -135,10 +147,10 @@ class Sokoban(SearchProblem):
                         #('Hay una caja adyacente en', fila, columna)
                         if (fila + df, columna + dc) not in PAREDES and (fila + df, columna + dc) not in cajas:
                             #('Puedo empujar la caja a', fila + df, columna + dc)
-                            acciones_posibles.append(('mover', (fila, columna), (fila + df, columna + dc)))
+                            acciones_posibles.append((direccion((df,dc)), (fila, columna), (fila + df, columna + dc)))
                     else:
                         #('En esta posicion no hay nada', fila, columna)
-                        acciones_posibles.append(('mover', (fila, columna)))
+                        acciones_posibles.append((direccion((df,dc)), (fila, columna)))
             
             
 
@@ -146,12 +158,14 @@ class Sokoban(SearchProblem):
         #('----')
         return acciones_posibles
 
+
     def result(self, state, action):
         ##(action)
         posicion, cajas, movimientos = state
         cajas_modificable = list(cajas)
         movimientos += 1
-        if action[0] == 'mover':
+        print(action[0])
+        if action[0]:
             if len(action) == 3:
                 cajas_modificable = ((caja if caja != action[1] else action[2]) for caja in cajas_modificable)
             posicion = action[1]
@@ -161,11 +175,26 @@ class Sokoban(SearchProblem):
         _, cajas ,_  = state
         return len(set(OBJETIVOS) - set(cajas))
 
+def jugar(paredes, cajas, objetivos, jugador, maximos_movimientos):
+    PAREDES = tuple(tuple(pared) for pared in paredes)
+    OBJETIVOS = tuple(tuple(objetivo) for objetivo in objetivos)
+    
+    CAJAS = tuple(tuple(caja) for caja in cajas)
+    JUGADOR = jugador
+    MOVIMIENTOS = maximos_movimientos
 
-problema = Sokoban(INICIAL)
+    INICIAL = (
+        PERSONAJE, #Posicion del personaje
+        CAJAS, #Cajas
+        MOVIMIENTOS, #Movimientos máximos
+    )
 
-solucion = astar(problema)
+    problema = Sokoban(INICIAL)
+    solucion = astar(problema)
 
+    acciones_joystick = []
+    for accion in solucion.path():
+        acciones_joystick.append(accion[0])
 
-for accion, estado in solucion.path():
-    print("Action:", accion, "Cajas:", estado[1])
+    return acciones_joystick
+
