@@ -114,13 +114,14 @@ def cajas_adyacentes(posicion, cajas):
 def direccion(coordenada):
     fila, columna = coordenada
     if fila == 1:
-        return 'derecha'
-    elif fila == -1:
-        return 'izquierda'
-    elif columna == 1:
-        return 'arriba'
-    elif columna == -1:
         return 'abajo'
+    elif fila == -1:
+        return 'arriba'
+    elif columna == 1:
+        return 'derecha'
+    elif columna == -1:
+        return 'izquierda'
+
 
 def jugar(paredes, cajas, objetivos, jugador, maximos_movimientos):
     PAREDES = tuple(tuple(pared) for pared in paredes)
@@ -169,8 +170,6 @@ def jugar(paredes, cajas, objetivos, jugador, maximos_movimientos):
                             #('En esta posicion no hay nada', fila, columna)
                             acciones_posibles.append((direccion((df,dc)), (fila, columna)))
                 
-                
-
             #(acciones_posibles)
             #('----')
             return acciones_posibles
@@ -196,9 +195,14 @@ def jugar(paredes, cajas, objetivos, jugador, maximos_movimientos):
     solucion = astar(problema)
 
     acciones_joystick = []
-    for accion in solucion.path():
-        if accion[0] is not None:
-            acciones_joystick.append(accion[0][0])
+    for action, state in solucion.path():
+        if action is not None:
+            if len(action) == 3:
+                accion_real,_,_ = action
+                acciones_joystick.append(accion_real)
+            elif len(action) == 2:
+                accion_real,_ = action
+                acciones_joystick.append(accion_real)
 
     return acciones_joystick
 
