@@ -184,7 +184,7 @@ def jugar(paredes, cajas, objetivos, jugador, maximos_movimientos):
     MOVIMIENTOS = maximos_movimientos
 
     INICIAL = (
-        PERSONAJE, #Posicion del personaje
+        JUGADOR, #Posicion del personaje
         CAJAS, #Cajas
         MOVIMIENTOS, #Movimientos máximos
     )
