@@ -99,7 +99,7 @@ def objetivo_mismo_lugar_pared(variables, values):
     elif (elemento1 and elemento2 in OBJETIVOS) or (elemento1 and elemento2 in PAREDES):
         return True
 
-for elemento1, elemento2 in combinations((PAREDES+OBJETIVOS),2):
+for elemento1, elemento2 in combinations(PAREDES+OBJETIVOS,2):
     restricciones.append(
         ((elemento1, elemento2), objetivo_mismo_lugar_pared)
     )
