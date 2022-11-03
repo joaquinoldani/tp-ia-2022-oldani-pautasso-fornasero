@@ -15,7 +15,7 @@ from simpleai.search import (MOST_CONSTRAINED_VARIABLE, CspProblem, backtrack)
 
 # Caso prueba simple
 tamano_fila, tamano_columna = 5, 5
-PAREDES = [f'pared{i+1}' for i in range(2)]
+PAREDES = [f'pared{i+1}' for i in range(1)]
 OBJETIVOS = [f'objetivo{i+1}' for i in range(2)]
 CAJAS = [f'caja{i+1}' for i in range(2)]
 
@@ -84,7 +84,7 @@ def cantidad_cajas_igual_objetivos(variables, values):
     return (cantidad_cajas == cantidad_objetivos) and cantidad_jugador == 1
 
 restricciones.append(
-    ((CAJAS + OBJETIVOS + PERSONAJE), cantidad_cajas_igual_objetivos)
+    (CAJAS + OBJETIVOS + PERSONAJE, cantidad_cajas_igual_objetivos)
 )
 
 # Los objetivos no pueden estar en las mismas posiciones que paredes, porque impedirían ganar.
@@ -157,7 +157,7 @@ def cajas_puestas_en_objetivos(variables, values):
     return cantidad == len(CAJAS) == len(OBJETIVOS)
 
 restricciones.append(
-    ((CAJAS + OBJETIVOS), cajas_puestas_en_objetivos)
+    (CAJAS + OBJETIVOS, cajas_puestas_en_objetivos)
 )
 
 # No puede haber dos objetos físicos en la misma posición. Se consideran objetos a las paredes, las cajas, y el jugador. Nótese que los objetivos no son objetos físicos, podría el jugador comenzar en la misma posición que un objetivo, o una caja comenzar sobre un objetivo también.
@@ -171,7 +171,7 @@ def cajas_paredes_personaje_mismo_lugar(variables, values):
                 # todo chequear si es == o !=
                 return val_elemento1 != val_elemento2 != val_elemento3
 
-for elemento1, elemento2, elemento3 in combinations((CAJAS+PAREDES+PERSONAJE),3):
+for elemento1, elemento2, elemento3 in combinations(CAJAS+PAREDES+PERSONAJE,3):
     restricciones.append(
         ((elemento1, elemento2, elemento3), cajas_paredes_personaje_mismo_lugar)
     )
