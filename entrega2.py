@@ -70,14 +70,15 @@ for elemento in variables:
 # Restricciones
 restricciones = []
 
+# ESTO CAPAZ QUE NO VA
 # La cantidad de cajas y objetivos siempre será la misma, y solo habrá un jugador, como en el juego normal.
-def cantidad_cajas_igual_objetivos(variables, values):
-    cajas, objetivos, personaje = variables
-    return (len(cajas) == len(objetivos)) and len(personaje) == 1
+# def cantidad_cajas_igual_objetivos(variables, values):
+#     cajas, objetivos, personaje = variables
+#     return len(tuple(cajas)) == len(tuple(objetivos)) and len(tuple(personaje)) == 1
 
-restricciones.append(
-    (CAJAS + OBJETIVOS + PERSONAJE, cantidad_cajas_igual_objetivos)
-)
+# restricciones.append(
+#     (((CAJAS),(OBJETIVOS),(PERSONAJE)), cantidad_cajas_igual_objetivos)
+# )
 
 # Los objetivos no pueden estar en las mismas posiciones que paredes, porque impedirían ganar.
 def objetivo_mismo_lugar_pared(variables, values):
@@ -183,10 +184,10 @@ problem = CspProblem(variables, dominio, restricciones)
 solution = backtrack(problem, variable_heuristic = MOST_CONSTRAINED_VARIABLE)
 
 
-print('Variables:',variables)
-print('Dominio:',dominio)
-for restriccion in restricciones:
-    print('Restriccion:', restriccion)
+#print('Variables:',variables)
+#print('Dominio:',dominio)
+#for restriccion in restricciones:
+#    print('Restriccion:', restriccion)
 print("Solution:")
 print(solution)
 
