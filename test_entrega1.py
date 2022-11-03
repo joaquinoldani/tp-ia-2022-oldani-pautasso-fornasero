@@ -134,36 +134,36 @@ def mover(posicion, direccion):
                   "#  #o #",
                   "#     #",
                   "#     #",
-                  "#######"), 30, 18, 3, id="1_caja_con_vueltas"), #-------------------------------------------------------------ESTE HDP ROMPE
+                  "#######"), 30, 18, 3, id="1_caja_con_vueltas"), 
 
     # para testear que no muevan cajas sobre cajas
-    # pytest.param(("##########",
-    #               "#        #",
-    #               "#        #",
-    #               "# ooCC j #",
-    #               "#        #",
-    #               "#        #",
-    #               "##########"), 30, 14, 10, id="2_cajas_requiere_desordenar"),#-------------------------------------------------------------ESTE HDP ROMPE
+    pytest.param(("##########",
+                  "#        #",
+                  "#        #",
+                  "# ooCC j #",
+                  "#        #",
+                  "#        #",
+                  "##########"), 30, 14, 10, id="2_cajas_requiere_desordenar"),
 
-    # pytest.param(("#######",
-    #               "# j   #",
-    #               "#   C #",
-    #               "# C####",
-    #               "#  #o #",
-    #               "#     #",
-    #               "#o    #",
-    #               "#######"), 30, 22, 3, id="2_cajas_con_vueltas"),#-------------------------------------------------------------ESTE HDP ROMPE
+    pytest.param(("#######",
+                  "# j   #",
+                  "#   C #",
+                  "# C####",
+                  "#  #o #",
+                  "#     #",
+                  "#o    #",
+                  "#######"), 30, 22, 3, id="2_cajas_con_vueltas"),
 
     #caso complicado pero que tienen que poder resolver
-    # pytest.param(("  ##### ",
-    #               "###   # ",
-    #               "# j   # ",
-    #               "### Co# ",
-    #               "#o##C # ",
-    #               "# # o ##",
-    #               "#C  CCo#",
-    #               "#   o  #",
-    #               "########"), 30, 23, 60, id="5_cajas_similar_consigna_simplificado"),#-------------------------------------------------------------ESTE HDP ROMPE
+    pytest.param(("  ##### ",
+                  "###   # ",
+                  "# j   # ",
+                  "### Co# ",
+                  "#o##C # ",
+                  "# # o ##",
+                  "#C  CCo#",
+                  "#   o  #",
+                  "########"), 30, 23, 60, id="5_cajas_similar_consigna_simplificado"),
 
     # caso muy heavy, deshabilitado por el momento
     # pytest.param(("  ##### ",
@@ -174,7 +174,7 @@ def mover(posicion, direccion):
     #               "# # o ##",
     #               "#C @CCo#",
     #               "#   o  #",
-    #               "########"), 30, 1, 10, id="juego_grande_ejemplo_consigna"),#-------------------------------------------------------------ESTE HDP ROMPE
+    #               "########"), 30, 1, 10, id="juego_grande_ejemplo_consigna"),
 ))
 def test_plan_es_correcto(jugar, tablero, maximos_movimientos, pasos_esperados, limite_segs):
     paredes = set()

@@ -19,85 +19,13 @@ import pytest
 
 #Estado y globales de ejemplo
 
-#Paredes
-# PAREDES = (
-#     (0,2),
-#     (0,3),
-#     (0,4),
-#     (0,5),
-#     (0,6),
-#     (1,0),
-#     (1,1),
-#     (1,2),
-#     (1,6),
-#     (2,0),
-#     (2,6),
-#     (3,0),
-#     (3,1),
-#     (3,2),
-#     (3,6),
-#     (4,0),
-#     (4,2),
-#     (4,3),
-#     (4,6),
-#     (5,0),
-#     (5,2),
-#     (5,6),
-#     (5,7),
-#     (6,0),
-#     (6,7),
-#     (7,0),
-#     (7,7),
-#     (8,0),
-#     (8,1),
-#     (8,2),
-#     (8,3),
-#     (8,4),
-#     (8,5),
-#     (8,6),
-#     (8,7),
-# )
+# PAREDES = ( tupla de posiciones de las paredes)
 
-# PAREDES = (
-#     (0,0),
-#     (0,1),
-#     (0,2),
-#     (0,3),
-#     (0,4),
-#     (0,5),
-#     (1,0),
-#     (1,5),
-#     (2,0),
-#     (2,1),
-#     (2,2),
-#     (2,3),
-#     (2,4),
-#     (2,5)
-# )
+# MOVIMIENTOS_MAX = cantidad maxima de movimientos
 
-# MOVIMIENTOS_MAX = 30
+# OBJETIVOS = ( tupla de posiciones de los objetivos )
 
-# OBJETIVOS = (
-#     (5,4), (4,1)
-# )
-
-# OBJETIVOS = (
-#     (1,4), (1,1)
-# )
-
-#Estado inicial
-# INICIAL = (
-#     (2,2), #Posicion del personaje
-#     ((2,3),(5,1)), #Cajas
-#     0, #Movimientos
-# )
-
-# INICIAL = (
-#     (1,2), #Posicion del personaje
-#     ((1,3), (1,1)), #Cajas
-#     0, #Movimientos
-# )
-
+# INICIAL = ( Posicion del personaje, Posicion de las cajas, Cantidad de movimientos )
 
 
 def cajas_adyacentes(posicion, cajas):
@@ -147,52 +75,50 @@ def jugar(paredes, cajas, objetivos, jugador, maximos_movimientos):
             return set(cajas) == set(OBJETIVOS) 
 
         def actions(self, state):
-            #creo q hace falta ver si no me paso de los movimientos maximos
             posicion, cajas, movimientos = state
             acciones_posibles = [] 
             if movimientos < MOVIMIENTOS_MAX:
                 fila_personaje, col_personaje = posicion
-                cajas_ady = cajas_adyacentes(posicion, cajas)
-                # print('Estoy en :', fila_personaje, col_personaje)
-                # print('Cajas', cajas)
-                # print('Cajas adyacentes: ', cajas_ady)
+                # revisamos las 4 opciones de movimiento
                 for df, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
                     fila = fila_personaje + df
                     columna = col_personaje + dc
-                    #('Me puedo mover a esto?', fila, columna)
+                    # chequeamos que la nueva posicion no sea una pared, si lo es no agregamos la accion
                     if (fila, columna) not in PAREDES:
                         if (fila, columna) in cajas:
-                            #('Hay una caja adyacente en', fila, columna)
+                            # si la nueva posicion es una caja revisamos que la posicion siguiente no sea una pared o una caja
                             if (fila + df, columna + dc) not in PAREDES and (fila + df, columna + dc) not in cajas:
-                                #('Puedo empujar la caja a', fila + df, columna + dc)
+                                # si eso ocurre podemos mover el personaje Y la caja
                                 acciones_posibles.append((direccion((df,dc)), (fila, columna), (fila + df, columna + dc)))
                         else:
-                            #('En esta posicion no hay nada', fila, columna)
+                            # si no hay cajas, el personaje se puede mover libremente 
                             acciones_posibles.append((direccion((df,dc)), (fila, columna)))
                 
-            #(acciones_posibles)
-            #('----')
             return acciones_posibles
 
 
         def result(self, state, action):
-            ##(action)
             posicion, cajas, movimientos = state
             cajas_modificable = list(cajas)
+            # por cada accion incrementamos la cantidad de movimientos
             movimientos += 1
+            
             if action[0]:
+                # si la accion tiene un tercer elemento quiere decir que hay que mover una caja 
                 if len(action) == 3:
                     cajas_modificable = ((caja if caja != action[1] else action[2]) for caja in cajas_modificable)
+                #mientras que el segundo elemento siempre es un movimiento del personaje
                 posicion = action[1]
             return (posicion, tuple(tuple(caja) for caja in cajas_modificable), movimientos)
 
         def heuristic(self, state):
             _, cajas ,_  = state
+            # controlamos la cantidad de cajas que estan en los objetivos
             return len(set(OBJETIVOS) - set(cajas))
 
 
     problema = Sokoban(INICIAL)
-    solucion = astar(problema)
+    solucion = astar(problema, graph_search=True)
 
     acciones_joystick = []
     for action, state in solucion.path():
