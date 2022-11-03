@@ -72,7 +72,7 @@ restricciones = []
 
 # La cantidad de cajas y objetivos siempre será la misma, y solo habrá un jugador, como en el juego normal.
 def cantidad_cajas_igual_objetivos(variables, values):
-    cajas, objetivos, personaje = values
+    cajas, objetivos, personaje = variables
     return (len(cajas) == len(objetivos)) and len(personaje) == 1
 
 restricciones.append(
@@ -154,19 +154,19 @@ restricciones.append(
 
 # No puede haber dos objetos físicos en la misma posición. Se consideran objetos a las paredes, las cajas, y el jugador. Nótese que los objetivos no son objetos físicos, podría el jugador comenzar en la misma posición que un objetivo, o una caja comenzar sobre un objetivo también.
 
-# def cajas_paredes_personaje_mismo_lugar(variables, values):
-#     elemento1, elemento2, elemento3 = variables
-#     val_elemento1, val_elemento2, val_elemento3 = values
-#     if elemento1 in PAREDES or elemento1 in CAJAS or elemento1 == PERSONAJE:
-#         if elemento2 in PAREDES or elemento2 in CAJAS or elemento2 == PERSONAJE:
-#             if elemento3 in PAREDES or elemento3 in CAJAS or elemento3 == PERSONAJE:
-#                 # todo chequear si es == o !=
-#                 return val_elemento1 != val_elemento2 != val_elemento3
+def cajas_paredes_personaje_mismo_lugar(variables, values):
+    elemento1, elemento2, elemento3 = variables
+    val_elemento1, val_elemento2, val_elemento3 = values
+    if elemento1 in PAREDES or elemento1 in CAJAS or elemento1 == PERSONAJE:
+        if elemento2 in PAREDES or elemento2 in CAJAS or elemento2 == PERSONAJE:
+            if elemento3 in PAREDES or elemento3 in CAJAS or elemento3 == PERSONAJE:
+                # todo chequear si es == o !=
+                return val_elemento1 != val_elemento2 != val_elemento3
 
-# for elemento1, elemento2, elemento3 in combinations(CAJAS+PAREDES+PERSONAJE,3):
-#     restricciones.append(
-#         ((elemento1, elemento2, elemento3), cajas_paredes_personaje_mismo_lugar)
-#     )
+for elemento1, elemento2, elemento3 in combinations(CAJAS+PAREDES+PERSONAJE,3):
+    restricciones.append(
+        ((elemento1, elemento2, elemento3), cajas_paredes_personaje_mismo_lugar)
+    )
 
 # EXTRA
 # Los objetivos no pueden estar en las mismas posiciones que otros objetivos.
