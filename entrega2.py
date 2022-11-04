@@ -79,16 +79,6 @@ def armar_mapa(filas, columnas, cantidad_paredes, cantidad_cajas_objetivos):
     # Restricciones
     restricciones = []
 
-    # ESTO CAPAZ QUE NO VA
-    # La cantidad de cajas y objetivos siempre será la misma, y solo habrá un jugador, como en el juego normal.
-    # def cantidad_cajas_igual_objetivos(variables, values):
-    #     cajas, objetivos, personaje = variables
-    #     return len(tuple(cajas)) == len(tuple(objetivos)) and len(tuple(personaje)) == 1
-
-    # restricciones.append(
-    #     (((CAJAS),(OBJETIVOS),(PERSONAJE)), cantidad_cajas_igual_objetivos)
-    # )
-
     # Los objetivos no pueden estar en las mismas posiciones que paredes, porque impedirían ganar.
     def objetivo_mismo_lugar_pared(variables, values):
         elemento1, elemento2 = variables
@@ -197,7 +187,6 @@ def armar_mapa(filas, columnas, cantidad_paredes, cantidad_cajas_objetivos):
     # No puede haber dos objetos físicos en la misma posición. Se consideran objetos a las paredes, las cajas, y el jugador. Nótese que los objetivos no son objetos físicos, podría el jugador comenzar en la misma posición que un objetivo, o una caja comenzar sobre un objetivo también.
 
     def cajas_paredes_personaje_mismo_lugar(variables, values):
-        elemento1, elemento2, elemento3 = variables
         val_elemento1, val_elemento2, val_elemento3 = values
         return val_elemento1 != val_elemento2 != val_elemento3
 
